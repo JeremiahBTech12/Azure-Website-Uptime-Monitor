@@ -1,6 +1,5 @@
 {
   "scriptFile": "check_website.py",
-  "entryPoint": "main",
   "bindings": [
     {
       "name": "mytimer",
