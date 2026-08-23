@@ -377,4 +377,4 @@ knows where its code lives. Fixed by adding
 ``` terraform
 Terraform Destroy
 ```
-
+## Thank you for following along watching me create real-world cloud solutions. This is only part of my full Azure cloud portfolio.
