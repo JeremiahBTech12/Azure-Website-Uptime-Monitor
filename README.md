@@ -25,6 +25,9 @@ The result is an automated monitoring solution that transforms website availabil
  
 ### <img width="983" height="535" alt="image" src="https://github.com/user-attachments/assets/f369d3cf-25ec-4910-a97a-228c398306cf" />
 
+The system operates using an automated, timer-driven architecture. An Azure Function runs every five minutes and sends an HTTP request to the target website to evaluate its availability, response time, and content. Each check is classified as a pass, slow response, or failure, with the results written to Azure Table Storage for historical tracking. When the function detects a failure, it records a SITE DOWN error in Application Insights, which sends the telemetry to the connected Log Analytics workspace. An Azure Monitor alert rule continuously evaluates these logs for failure events and, when a failure is detected, triggers an Action Group that immediately sends an email and SMS notification to the business owner.
+
+Supporting this workflow are several monitoring and data components. Azure Table Storage maintains a record of every website check, including timestamps, response times, and status information, while Application Insights and Log Analytics provide visibility into the Function App’s executions, errors, and overall health. Together, these services create a fully automated monitoring pipeline that continuously checks the website, records its performance, and alerts the appropriate recipient when an issue occurs.
 
 ##  What gets built
 
