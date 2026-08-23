@@ -1,6 +1,6 @@
 # Azure-Website-Uptime-Monitor
 
-## Video walkthrough: 
+## Video walkthrough: https://www.loom.com/share/0621ebede73446e6b1980083539cea82
 Jeremiah Brown | Azure Cloud Engineer | Linkedin: https://www.linkedin.com/in/jeremiah-brown12/
 
 ## Project Overview
