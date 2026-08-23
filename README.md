@@ -75,16 +75,16 @@ New-Item -ItemType File function_app\check_website.py, function_app\requirements
 ###
 - Before writing the infrastructure, write the monitoring logic. Azure Functions are small, event-driven pieces of code — in this case, a Python function that runs on a timer.
 
-### function_app/requirements.txt
+### Write function_app/requirements.txt
 
-### function_app/function.json
+### Write function_app/function.json
 
 ###
 - This is the Function binding configuration. It tells Azure Functions what triggers the function and what its inputs and outputs are.
 
 - schedule = "0 */5 * * * *" is a CRON expression meaning "run every 5 minutes." The six fields are: seconds, minutes, hours, day-of-month, month, day-of-week. */5 in the minutes field means "every 5 minutes."
 
-### function_app/check_website.py
+### Write function_app/check_website.py
 
 ###
 - This is the actual monitoring logic. Read through each section — it is explained inline.
