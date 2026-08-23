@@ -64,34 +64,34 @@ New-Item -ItemType Directory -Path "function_app"
 New-Item -ItemType File main.tf, variables.tf, outputs.tf, terraform.tfvars
 New-Item -ItemType File function_app\check_website.py, function_app\requirements.txt, function_app\function.json
 ```
-## — Write variables.tf
-## — Write terraform.tfvars
+### Write variables.tf
+### Write terraform.tfvars
 
 ###
-Replace the values with your actual target website URL, email, and phone number.
+- Replace the values with your actual target website URL, email, and phone number.
 
-## — Write the Function Code
-
-###
-Before writing the infrastructure, write the monitoring logic. Azure Functions are small, event-driven pieces of code — in this case, a Python function that runs on a timer.
-
-## - function_app/requirements.txt
-
-## - function_app/function.json
+### Write the Function Code
 
 ###
-This is the Function binding configuration. It tells Azure Functions what triggers the function and what its inputs and outputs are.
+- Before writing the infrastructure, write the monitoring logic. Azure Functions are small, event-driven pieces of code — in this case, a Python function that runs on a timer.
 
-schedule = "0 */5 * * * *" is a CRON expression meaning "run every 5 minutes." The six fields are: seconds, minutes, hours, day-of-month, month, day-of-week. */5 in the minutes field means "every 5 minutes."
+### function_app/requirements.txt
 
-## - function_app/check_website.py
+### function_app/function.json
 
 ###
-This is the actual monitoring logic. Read through each section — it is explained inline.
+- This is the Function binding configuration. It tells Azure Functions what triggers the function and what its inputs and outputs are.
 
-## — Write main.tf
+- schedule = "0 */5 * * * *" is a CRON expression meaning "run every 5 minutes." The six fields are: seconds, minutes, hours, day-of-month, month, day-of-week. */5 in the minutes field means "every 5 minutes."
 
-## Resource group
+### function_app/check_website.py
+
+###
+- This is the actual monitoring logic. Read through each section — it is explained inline.
+
+### Write main.tf
+
+### Resource group
 
 ```terraform
 resource "azurerm_resource_group" "main" {
@@ -101,12 +101,12 @@ resource "azurerm_resource_group" "main" {
 }
 ```
 
-## Storage account and Table
+### Storage account and Table
 
 ###
-Azure Functions need a storage account to store their runtime state, logs, and deployment packages. The same account is used for the uptime check results table — this keeps the architecture simple.
+- Azure Functions need a storage account to store their runtime state, logs, and deployment packages. The same account is used for the uptime check results table — this keeps the architecture simple.
 
-account_replication_type = "LRS" is sufficient here because this data is operational (check results), not business-critical backup data. If the storage account in a single region failed, the monitoring function itself would also be down, so geo-replication adds cost without adding meaningful protection.
+- account_replication_type = "LRS" is sufficient here because this data is operational (check results), not business-critical backup data. If the storage account in a single region failed, the monitoring function itself would also be down, so geo-replication adds cost without adding meaningful protection.
 
 ```terraform
 resource "azurerm_storage_account" "main" {
@@ -152,7 +152,7 @@ resource "azurerm_application_insights" "main" {
 }
 ```
 
-## App Service Plan and Function App
+### App Service Plan and Function App
 
 ###
 The App Service Plan is the compute that runs your Function App. kind = "FunctionApp" and sku { tier = "Dynamic" name = "Y1" } together configure a Consumption plan — Azure only charges you when the function is actually executing, not for idle time. For a function that runs 12 times an hour, this costs fractions of a cent per day.
@@ -202,7 +202,7 @@ resource "azurerm_linux_function_app" "monitor" {
 }
 ```
 
-## Action Group with email and SMS
+### Action Group with email and SMS
 
 ###
 This Action Group sends alerts to both email and SMS. The sms_receiver block requires the phone number in E.164 format (country code + number, no spaces or dashes, e.g. +14045550100).
@@ -229,7 +229,7 @@ resource "azurerm_monitor_action_group" "downtime_alerts" {
 }
 ```
 
-## Monitor alert on Function failures
+### Monitor alert on Function failures
 
 ###
 This alert fires when the Function App logs errors — specifically, when the monitoring function writes logging.error() calls, which it does whenever the target site fails a check. Application Insights routes these error logs into Log Analytics, and this alert watches the log stream for them.
@@ -274,7 +274,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "site_down" {
 }
 ```
 
-## — Write outputs.tf
+### — Write outputs.tf
 
  ## Deploy
 
@@ -288,6 +288,7 @@ terraform apply
 
 ## Deploy the Function Code
 
+###
 Terraform provisions the Function App container. You deploy the function code separately using the Azure CLI.
 
 First, package the function:
