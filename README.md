@@ -77,6 +77,9 @@ Python 3.10 installed
 ## Troubleshooting & Lessons Learned
 
 ###
+
+The errors is this project ranged from simple requests, to real headaches diagnosing/resolving.
+
 - `terraform apply` failed provisioning the App Service Plan with a quota error on the Y1 (Consumption) SKU**
 The subscription had no quota allocated for the Y1 (Dynamic/Consumption) tier needed to host
 `asp-uptime-jeremiah`, so Terraform couldn't create it. The fix here was to
