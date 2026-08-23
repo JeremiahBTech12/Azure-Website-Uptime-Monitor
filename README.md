@@ -57,7 +57,46 @@ rg-uptime-monitor-jeremiah
 
 ###
 
+ 
+ ## Deploy
+
+###
+Windows (PowerShell):
+```terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+## Deploy the Function Code
+
+Terraform provisions the Function App container. You deploy the function code separately using the Azure CLI.
+
+First, package the function:
+
+###
+Windows (PowerShell):
+```terraform
+cd function_app
+pip install -r requirements.txt --target .python_packages\lib\site-packages
+Compress-Archive -Path * -DestinationPath ..\function_deploy.zip -Force
+cd ..
+```
+
+## Deploy to the Function App:
+
+###
+Windows (PowerShell):
+```terraform
+az functionapp deployment source config-zip `
+  --resource-group rg-uptime-monitor-jeremiah `
+  --name func-uptime-jeremiah `
+  --src function_deploy.zip
+```
+
 ## Verify Running Monitor
+Wait 5 minutes for the first execution, then check the results:
+###
 Windows (PowerShell):
 ```
 az storage entity query `
@@ -66,7 +105,6 @@ az storage entity query `
   --auth-mode login `
   --output table
 ```
-
 
 You should see rows appearing with Status values of PASS, SLOW, or FAIL. A healthy site will show PASS for every row.
 
