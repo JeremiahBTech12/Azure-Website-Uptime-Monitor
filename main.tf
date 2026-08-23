@@ -83,8 +83,18 @@ resource "azurerm_linux_function_app" "monitor" {
     "FUNCTIONS_WORKER_RUNTIME"                = "python"
     "WEBSITE_RUN_FROM_PACKAGE"                = "1"
   }
- 
+
   tags = var.tags
+
+  # WEBSITE_RUN_FROM_PACKAGE gets overwritten with a real package URL by
+  # `az functionapp deployment source config-zip` (Step 7). Terraform doesn't
+  # see that change, so a later plain `terraform apply` would otherwise
+  # reset it to "1" and break the deployed function. Let the deploy step own it.
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+    ]
+  }
 }
 
 resource "azurerm_monitor_action_group" "downtime_alerts" {
@@ -103,6 +113,44 @@ resource "azurerm_monitor_action_group" "downtime_alerts" {
     country_code = "1"
     phone_number = replace(replace(var.alert_phone, "+1", ""), "-", "")
   }
+
+  tags = var.tags
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "site_down" {
+  name                = "alert-site-down-${var.yourname}"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  description         = "Fires when the uptime monitor detects site failure."
+  severity            = 1
+  enabled             = true
+
+  scopes                  = [azurerm_log_analytics_workspace.main.id]
+  evaluation_frequency    = "PT5M"
+  window_duration         = "PT5M"
+  auto_mitigation_enabled = true
+
+  criteria {
+    query = <<-QUERY
+      AppTraces
+      | where SeverityLevel == 3
+      | where Message contains "SITE DOWN"
+      | summarize count() by bin(TimeGenerated, 5m)
+      | where count_ > 0
+    QUERY
+
+    time_aggregation_method = "Count"
+    threshold               = 0
+    operator                = "GreaterThan"
+  }
+
+  action {
+    action_groups = [azurerm_monitor_action_group.downtime_alerts.id]
+  }
+
+  tags = var.tags
+}
+
  
   tags = var.tags
 }
