@@ -49,13 +49,26 @@ rg-uptime-monitor-jeremiah
 
 ###
  Before deploying, install and configure:
-Terraform installed
-Azure CLI installed and authenticated (az login)
-Python 3.10 installed
+- Terraform installed
+- Azure CLI installed and authenticated (az login)
+- Python 3.10 installed
 
 ## Terraform Configuration
 
 ###
+
+## Verify Running Monitor
+Windows (PowerShell):
+```
+az storage entity query `
+  --account-name stuptimejeremiah `
+  --table-name uptimechecks `
+  --auth-mode login `
+  --output table
+```
+
+
+You should see rows appearing with Status values of PASS, SLOW, or FAIL. A healthy site will show PASS for every row.
 
 ## Verification Checklist
 ###
