@@ -77,6 +77,27 @@ Python 3.10 installed
 ## Troubleshooting & Lessons Learned
 
 ###
+- `terraform apply` failed provisioning the App Service Plan with a quota error on the Y1 (Consumption) SKU**
+The subscription had no quota allocated for the Y1 (Dynamic/Consumption) tier needed to host
+`asp-uptime-jeremiah`, so Terraform couldn't create it. The fix here was to
+request a quota increase for the Y1/Consumption tier directly through Azure (Portal → Support →
+Quotas) and wait for approval before re-running `terraform apply`.
+
+- `check_website` still showed 0 functions found 
+PowerShell's `Compress-Archive` wrote the zip's internal file paths using backslashes
+(`check_website\function.json`) instead of the forward slashes the ZIP format — and the
+Linux-based Function host — require. The host couldn't see `check_website` as a folder at all,
+so it reported zero functions no matter how many times the app was restarted. Fixed by
+rebuilding the zip with Python's `zipfile` module, which writes correct forward-slash paths.
+
+- Running `terraform apply` after deploying function code would silently break the deployment again
+`main.tf` hardcodes `WEBSITE_RUN_FROM_PACKAGE = "1"`, but
+`az functionapp deployment source config-zip` overwrites that same setting with a real package
+URL after every deploy. Terraform has no visibility into that change, so a plain `apply` treats
+the real URL as drift and resets it back to `"1"` — at which point the Function App no longer
+knows where its code lives. Fixed by adding
+`lifecycle { ignore_changes = [app_settings["WEBSITE_RUN_FROM_PACKAGE"]] }` to the
+`azurerm_linux_function_app` resource.
 
 ## Teardown
 ###
