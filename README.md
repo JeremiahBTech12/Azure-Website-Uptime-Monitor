@@ -274,7 +274,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "site_down" {
 }
 ```
 
-### — Write outputs.tf
+### Write outputs.tf
 
  ## Deploy
 
