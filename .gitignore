@@ -1,0 +1,11 @@
+# Terraform variable files hold personal values (email, phone) - never commit them
+*.tfvars
+!*.tfvars.example
+
+# Terraform state and working files
+*.tfstate*
+.terraform/
+
+# Build artifacts
+.python_packages/
+*.zip

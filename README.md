@@ -68,7 +68,7 @@ New-Item -ItemType File function_app\check_website.py, function_app\requirements
 ### Write terraform.tfvars
 
 ###
-- Replace the values with your actual target website URL, email, and phone number.
+- Copy `terraform.tfvars.example` to `terraform.tfvars` and replace the values with your actual target website URL, email, and phone number. `terraform.tfvars` is git-ignored so your personal details never get committed.
 
 ### Write the Function Code
 

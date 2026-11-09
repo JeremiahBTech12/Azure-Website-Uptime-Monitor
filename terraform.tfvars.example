@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your own values.
+# terraform.tfvars is git-ignored so your email and phone number stay out of the repo.
+yourname    = "yourname"             # lowercase letters/numbers only; used in resource names
+location    = "East US"
+target_url  = "https://www.example.com"
+alert_email = "you@example.com"
+alert_phone = "+14045550100"         # E.164 format
